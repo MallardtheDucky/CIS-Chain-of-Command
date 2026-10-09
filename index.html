@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- viewport-fit=cover lets the page use the full screen on notched phones; safe-area padding in style.css keeps content clear of the notch -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#060d1c">
     <title>Confederate Chain of Command</title>
 
     <meta name="description" content="Full rank structures for the Confederate Provincial Authority: the Navy, Droid Army, Commando Corps, intelligence services, the Veil Network and civil governance. Classification: Restricted. Glory to the Confederacy of Independent Systems.">
+    <!-- Link preview (Discord, Twitter, etc.). The image address must be a full https:// URL. -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Confederate Chain of Command">
     <meta property="og:description" content="Full rank structures for the Confederate Provincial Authority: the Navy, Droid Army, Commando Corps, intelligence services, the Veil Network and civil governance. Classification: Restricted. Glory to the Confederacy of Independent Systems.">
@@ -18,6 +21,7 @@
     <meta name="twitter:description" content="Full rank structures for the Confederate Provincial Authority: the Navy, Droid Army, Commando Corps, intelligence services, the Veil Network and civil governance. Classification: Restricted. Glory to the Confederacy of Independent Systems.">
     <meta name="twitter:image" content="https://mallardtheducky.github.io/CIS-Chain-of-Command/assets/link-preview.png">
 
+    <!-- Tailwind loads from its CDN, so an internet connection is needed for full styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/png" href="assets/emblem.png">
     <script src="js/tailwind-config.js"></script>
@@ -25,6 +29,7 @@
 </head>
 <body>
 
+    <!-- Outer datapad frame: screws, LEDs, vents and model badge are decoration only (hidden on phones) -->
     <div class="datapad-chassis">
         <div class="screw screw-tl"></div>
         <div class="screw screw-tr"></div>
@@ -48,6 +53,7 @@
 
         <div class="model-badge">TECHNO UNION // CPA-DATAPAD-19-C // CLASSIFIED NETWORK TERMINAL // SERIAL: 19-BBY-9</div>
 
+        <!-- Screen area: header, rank table and footer -->
         <div class="screen-bezel grid-lines">
             <div class="scanline"></div>
             <div class="scan-beam"></div>
@@ -94,6 +100,10 @@
                 </div>
             </header>
 
+            <!-- Shown on phones only: tells the user the table scrolls sideways -->
+            <div class="swipe-hint">&#8646; SWIPE TO SEE ALL BRANCHES &nbsp;//&nbsp; TAP A RANK FOR ITS DOSSIER</div>
+
+            <!-- Rank table: header row and body rows are filled in by render() in js/app.js -->
             <div id="table-view" class="flex-grow overflow-auto relative z-10">
                 <table class="w-full text-left border-collapse" style="min-width: max(100%, 900px)">
                     <thead class="sticky top-0 z-20 bg-imperial-panel">
@@ -106,6 +116,7 @@
             </div>
             <div id="view-panel" class="flex-grow overflow-auto relative z-10 hidden"></div>
 
+            <!-- Footer: scrolling ticker and status line -->
             <footer class="border-t shrink-0 relative z-10" style="background: linear-gradient(180deg, #0d1117 0%, #0a0e14 100%); border-top-color: #1e2530;">
                 <div class="ticker-wrap px-0 py-1 border-b font-mono text-[9px]" style="border-bottom-color: #1e2530; color: rgba(74,168,255,0.35);">
                     <div class="ticker-inner">&nbsp;&nbsp;&nbsp;⬥ CONFEDERATE SECURITY NETWORK ACTIVE &nbsp;⬥&nbsp; ALL TRANSMISSIONS LOGGED BY THE OFFICE OF THE SUPREME COMMANDER &nbsp;⬥&nbsp; UNAUTHORIZED ACCESS WILL BE REFERRED TO THE PROVINCIAL SECURITY BUREAU , DIRECTIVE 19-&nbsp;&nbsp;&nbsp;</div>
@@ -132,6 +143,7 @@
         </div>
     </div>
 
+    <!-- Dossier popup: opened by clicking a rank cell or branch header, filled by fillModal() in js/app.js -->
     <div id="modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-6" style="background: rgba(0,0,0,0.92); backdrop-filter: blur(4px);">
         <div class="w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col relative" style="background: linear-gradient(160deg, #0f1620 0%, #0a0d14 100%); border: 2px solid #4aa8ff; box-shadow: 0 0 80px rgba(74,168,255,0.25), 0 0 200px rgba(74,168,255,0.08);">
 
@@ -207,6 +219,7 @@
         </div>
     </div>
 
+    <!-- Script order matters: data first, then insignia/details/dossier helpers, then app.js -->
     <script src="js/data.js"></script>
     <script src="js/insignia.js"></script>
     <script src="js/details.js"></script>

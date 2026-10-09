@@ -5,6 +5,7 @@
 @font-face { font-family:'Share Tech Mono'; font-weight:400; src:url('../assets/fonts/share-tech-mono-latin-400-normal.woff2') format('woff2'); font-display:swap; }
 @font-face { font-family:'Aurebesh'; src:url('../assets/fonts/Aurebesh_OmaTres.otf') format('opentype'); font-display:swap; }
 
+/* Page background and base layout (desktop: single centred datapad, no page scroll) */
 body {
             background: radial-gradient(ellipse at center, #080b14 0%, #000 100%);
             color: #f0f6fc;
@@ -20,6 +21,7 @@ body {
             body { height: auto; min-height: 100vh; overflow: auto; align-items: flex-start; justify-content: flex-start; }
         }
 
+        /* Datapad frame */
         .datapad-chassis {
             width: 98vw;
             height: 96vh;
@@ -48,8 +50,10 @@ body {
             #rank-table-body td { padding: 0 !important; }
             header .p-4.flex { padding: 8px 12px !important; }
             header h1 { font-size: 1.5rem !important; }
+            /* Header tab buttons */
             .tab-btn { padding: 6px 16px !important; font-size: 12px !important; }
             #modal > div { max-width: 96vw !important; max-height: 94vh !important; }
+            /* Dossier popup: left insignia panel */
             .insignia-panel { width: 210px !important; padding: 16px 12px !important; }
             #modal-rank { font-size: 2rem !important; }
             #modal .flex-grow.flex.flex-col.p-8 { padding: 18px !important; }
@@ -57,6 +61,7 @@ body {
 
         @media (max-width: 768px) {
             .datapad-chassis { width: 100vw; height: auto; min-height: 100vh; border-radius: 0; border-left: none; border-right: none; padding: 10px 4px 24px; overflow: visible; }
+            /* Inner screen */
             .screen-bezel { overflow: visible !important; border-radius: 6px !important; }
             .vent-left, .vent-right, .model-badge, .screw-tl, .screw-tr, .screw-bl, .screw-br { display: none !important; }
             .led-cluster { left: 12px; top: 6px; }
@@ -252,6 +257,7 @@ body {
             color: #fff;
         }
 
+        /* Tier group heading rows in the table */
         .tier-group-row td {
             padding: 4px 16px;
             background: rgba(74,168,255,0.06);
@@ -397,6 +403,7 @@ body {
             );
         }
 
+        /* Dossier popup: description box */
         .desc-box {
             background: linear-gradient(160deg, rgba(5,5,10,0.9) 0%, rgba(10,12,20,0.95) 100%);
             border: 1px solid #1e2530;
@@ -441,3 +448,72 @@ th.branch-th { cursor: pointer; }
 th.branch-th:hover { color: #fff; background: rgba(74,168,255,0.08); }
 @media (prefers-reduced-motion: reduce) { .scan-beam, .ticker-inner { animation: none !important; } }
 
+/* ================= MOBILE FRIENDLY LAYER =================
+   Everything below only affects phones and small tablets, and overrides the
+   older mobile rules above. Desktop layout is unchanged. */
+
+.swipe-hint { display: none; }
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, .cell-hover, th.branch-th { -webkit-tap-highlight-color: rgba(74,168,255,0.25); touch-action: manipulation; }
+
+@media (max-width: 768px) {
+    /* Full-height page that respects the phone's changing browser bars (dvh) and notches (safe-area) */
+    body { min-height: 100vh; min-height: 100dvh; }
+    .datapad-chassis {
+        min-height: 100vh; min-height: 100dvh;
+        padding: max(10px, env(safe-area-inset-top)) max(4px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-left));
+    }
+
+    /* Tabs: one swipeable row instead of wrapping onto several lines */
+    #tab-bar { flex-wrap: nowrap !important; justify-content: flex-start !important; overflow-x: auto; width: 100%; gap: 6px !important; scroll-snap-type: x proximity; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+    #tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn { flex: 0 0 auto !important; min-height: 40px; padding: 8px 14px !important; white-space: nowrap; scroll-snap-align: start; }
+
+    .swipe-hint { display: block; padding: 6px 12px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: rgba(156,201,255,0.7); background: #0a0e14; border-bottom: 1px solid #1e2530; position: relative; z-index: 10; }
+
+    /* Table: scrolls in its own box so the header row and tier column can stay pinned */
+    #table-view { max-height: 72vh; max-height: 72dvh; min-height: 320px; overflow: auto !important; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+    #table-view table { min-width: 0 !important; width: max-content; }
+    #table-view thead th { position: sticky; top: 0; z-index: 6; background: #0d1117; min-width: 140px; padding: 12px 10px !important; font-size: 11px; white-space: normal; }
+    #table-view tr:not(.tier-group-row) > td { min-width: 140px; font-size: 13px; }
+    #table-view thead th:first-child,
+    #table-view tr:not(.tier-group-row) > td:first-child { position: sticky; left: 0; min-width: 64px; width: 64px; padding: 12px 6px !important; font-size: 12px; background: #090c12 !important; z-index: 5; box-shadow: 2px 0 0 #1e2530; }
+    #table-view thead th:first-child { z-index: 8; }
+    .tier-group-row td { font-size: 10px; padding: 6px 10px; }
+
+    /* Bigger tap targets, with press feedback since there is no hover on touch screens */
+    .cell-hover { padding: 14px 10px !important; min-height: 48px; line-height: 1.25; }
+    .cell-hover:active, th.branch-th:active { background: rgba(74,168,255,0.22); }
+
+    /* Footer: keep it short */
+    .ticker-wrap { font-size: 8px !important; }
+    footer .px-4.py-2.flex.justify-between { padding: 8px 10px !important; }
+
+    /* Dossier popup: full screen, scrolls as one piece, large close button */
+    #modal > div { height: 100vh !important; height: 100dvh !important; max-height: 100dvh !important; }
+    #modal .p-5.border-b-2 { padding-top: max(10px, env(safe-area-inset-top)) !important; }
+    #modal .p-5.border-b-2 button { min-height: 44px; padding: 6px 18px !important; font-size: 12px !important; }
+    #modal .p-5.border-b-2 .font-header { font-size: 1.15rem !important; }
+    #modal .custom-scroll { max-height: none !important; overflow: visible !important; }
+    #modal .desc-box { min-height: 0 !important; }
+    #modal .desc-box p { font-size: 0.9rem !important; line-height: 1.6; }
+    #modal .grid.grid-cols-2 { gap: 10px !important; }
+    #modal-tier { font-size: 1.2rem !important; }
+    #modal-address { font-size: 0.9rem !important; }
+    #modal .flex-grow.flex.flex-col.p-8 { padding-bottom: max(20px, env(safe-area-inset-bottom)) !important; }
+}
+
+@media (max-width: 480px) {
+    header h1 { font-size: 1.1rem !important; }
+    header h1 span { font-size: 0.8rem !important; margin-left: 4px !important; }
+    header .font-mono { font-size: 8px !important; letter-spacing: 0.12em !important; }
+    #modal .grid.grid-cols-2 { grid-template-columns: 1fr !important; }
+    #modal-rank { font-size: 1.5rem !important; }
+    #modal-plaque-area { transform: scale(0.8) !important; margin: 0 0 8px !important; }
+}
+
+/* Phones turned sideways: shorter table box so it fits the low screen */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+    #table-view { max-height: 62vh; max-height: 62dvh; min-height: 200px; }
+}

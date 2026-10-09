@@ -1,6 +1,9 @@
+// data.js: all rank, branch, tab and palette data. This is the file to edit to change ranks.
+// TIERS: the 28 paygrade rows, top to bottom. Every branch "ranks" string must have one entry per tier.
 const TIERS = ['FO-5','FO-4','FO-3','FO-2','FO-1','SO-3','SO-2','SO-1','JO-4','JO-3','JO-2','JO-1','MID-1',
   'WO-4','WO-3','WO-2','WO-1','SNCO-3A','SNCO-3','SNCO-2A','SNCO-2','SNCO-1','JNCO-3','JNCO-2','JNCO-1','E-3','E-2','E-1'];
 
+// TIER_GROUPS: heading text shown above certain tier rows in the table.
 const TIER_GROUPS = {
   'FO-5':'FLAG OFFICERS // BRANCH APEX', 'FO-3':'FLAG OFFICERS // STRATEGIC COMMAND', 'FO-1':'FLAG OFFICERS // SENIOR COMMAND',
   'SO-3':'SENIOR OFFICERS // OPERATIONAL MANAGEMENT', 'JO-4':'JUNIOR OFFICERS // FIELD EXECUTION',
@@ -9,6 +12,7 @@ const TIER_GROUPS = {
   'JNCO-3':'JUNIOR NON-COMMISSIONED OFFICERS', 'E-3':'ENLISTED // EXPERIENCED', 'E-2':'ENLISTED // STANDARD', 'E-1':'ENLISTED // ENTRY'
 };
 
+// FAMILIES: insignia colour palettes, one per branch family (fleet, ground, intel, etc.).
 const FAMILIES = {
   fleet:   { bg:'#3b3f63', mark:'#f5b800', note:'Gold triangles on a navy field. A red underline marks command qualification; more triangles and a longer bar mean higher grade.' },
   ground:  { bg:'#2f4033', mark:'#9b0a0a', note:'Red triangles on a dark green field. A gold bar marks field-command qualification; more triangles mean higher grade.' },
@@ -16,10 +20,12 @@ const FAMILIES = {
   civil:   { bg:'#1f4650', mark:'#dfe9f6', note:'Ivory triangles on a slate-teal field. A gold bar marks a Charter-confirmed office.' },
   veil:    { bg:'#14161f', mark:'#8d96a8', note:'Silver triangles on a black field. Worn only on internal identity cards, never in public.' },
   support: { bg:'#3a2f28', mark:'#e8832a', note:'Bronze triangles on a brown field. A gold bar marks a certified technical authority.' },
+  vigil:   { bg:'#1a1216', mark:'#d9ceb6', note:'Bone triangles on a black-oxblood field. A crimson bar marks the Chapter and the Magister. Every rank, Oblate to Magister, bears the Order\'s own mark: a pale hexagon holding a red slit-pupil eye.' },
   droid:   { bg:'#1b2a36', mark:'#38d6ff', note:'Cyan triangles on a steel field. A cyan bar marks a learning-core certified unit.' },
   police:  { bg:'#1d2b4a', mark:'#8fb8ff', note:'Pale-blue triangles on a midnight field. A gold bar marks senior constabulary authority.' }
 };
 
+// BRANCHES: every branch. "ranks" holds 28 names separated by ";" ("-" = no rank at that tier). Other fields feed the dossier text.
 const BRANCHES = {
 
 navy: { tab:'fleet', label:'Navy', name:'Confederate Navy', fam:'fleet',
@@ -269,6 +275,40 @@ guard: { tab:'intel', label:'Charter Guard', name:'Charter Guard', fam:'police',
   duties:["Protect constitutional offices and persons","Control access to protected buildings","Respond to threats against officeholders"],
   posts:{ FO:"Commands the Guard.", SO:"Commands a protective division or detail.", JO:"Leads a protective team.", MID:"Guard cadet.", WO:"Protective-systems specialist.", NCO:"Leads details and posts.", E:"Serves on a post or detail." } },
 
+vigil: { tab:'intel', label:'Brotherhood', name:'Brotherhood of Osseriton', fam:'vigil',
+  intro:"The Brotherhood of Osseriton, called the Order of the Vigil within its own walls and \"the Quiet Brothers\" in the Veil's designation, is the Provincial Authority's sealed order of sensitives: a closed brotherhood of no more than one hundred, bound by the Covenant and answerable to the Supreme Commander alone. The Veil Network finds sensitives in the wider galaxy and smuggles them to Osseriton; the Vigil raises, tests and sworn-binds them. Its members are sent out on writs to hunt rogue sensitives, guard secrets, silence loose ends and kill targets. Every Sworn is paired for life with a droid Counsel.",
+  heritage:"Founded under Vexis. Its recruits come from the Veil Network's finds and from children born on Osseriton who test strong. Its law is the Covenant; its ceiling is the Measure.",
+  mission:"Keep the Confederacy's secrets by hunting, guarding and, when ordered, killing, without ever being seen to do so.",
+  org:"Vigil Halls train and induct; field cells of Sworn operate under Priors; the Chapter governs. Two hands serve the Magister: the Marshal (field arm) and the Seneschal (discipline, records and the Vaults). The Measure caps the whole Order at one hundred.",
+  chain:"Sworn, Prior, Preceptor, Marshal or Seneschal, Magister, Supreme Commander. The Seneschal stands beside the Marshal, not above or below.",
+  reports:"The Magister, who answers to the Supreme Commander alone. The Marshal liaises with the Military Senate.",
+  assets:"Droid Counsels, the Vigil Halls, the Counsel-archive, the Vaults, the Ledger of the Fallen, and the writs that send a brother into the field.",
+  formations:["FO|The Order: the Magister, with the Marshal and the Seneschal as his two hands","FO|The Chapter: the Magister, Marshal, Seneschal and all Preceptors; it votes on every elevation","SO|Vigil Hall: a Preceptor, with its Oblates, Aspirants and Novices","SO|Field cell: a Prior with two to four Sworn","JO|Sworn on writ: a full operative paired with a droid Counsel; may hold a Calling (Edge, Shroud or Eye)","MID|Novice: bonded to one mentor of Sworn rank or higher","E|Aspirant: an adult candidate on trial, watched in a Hall","E|Oblate: a child ward of the Order, unsworn"],
+  ranks:"Magister;Marshal;-;-;-;Preceptor;-;Prior;-;-;Sworn;-;Novice;-;-;-;-;-;-;-;-;-;-;-;-;-;Aspirant;Oblate",
+  duties:["Hunt rogue sensitives and silence loose ends","Guard Confederate secrets and the persons who hold them","Train and sworn-bind every new brother under the Covenant","Carry out writs ordered by the Magister"],
+  posts:{ FO:"Governs the Order or heads its field arm or its discipline and records.", SO:"Commands a Vigil Hall or leads a field cell.", JO:"Serves on writ as a full operative with a droid Counsel.", MID:"Trains as a shadow to one mentor.", E:"Under trial or in the Order's care; unsworn or newly tested." },
+  doctrine:"One hundred is enough. A secret kept by few is kept longer. Act only on a writ; report when the work is done; leave nothing for the galaxy to find.",
+  training:"Years inside the Vigil Halls. An Oblate learns by repetition; an Aspirant is tested for temperament, loyalty and aptitude; a Novice spends about a decade bonded to a mentor in sparring, covercraft, the Creed and the Counsel-archive.",
+  notable:"The Chapter; the three Callings (Edge, Shroud, Eye); the Vigil Halls (including the Second Hall, where the annual trial-by-combat is held); the Vaults; the Ledger of the Fallen; Champion of the Halls, currently Sworn Kaelen Roth.",
+  traditions:"Three Oaths mark the crossings: the Novice, the Sworn and Consecration into a Calling. The Seneschal records each in his own hand and the droid Counsel witnesses. The Seneschal recites the Covenant and keeps the Ledger of the Fallen. Washing out is honourable. An Oblate who leaves at adulthood walks away with no shame and no debt.",
+  lateral:{ tier:'FO-4', rank:'Seneschal' },
+  noInsignia:"Every rank of the Brotherhood bears the hexagon-and-eye mark.",
+  advance:"Every advancement needs three things: time served, an aptitude shown and a sponsor of higher rank who vouches for the candidate to the Chapter. The Chapter (Magister, Marshal, Seneschal and all Preceptors) votes; the Magister ratifies and may veto any name without explanation. The Measure caps the Order at one hundred, so a brother rises when someone above him dies, leaves, or the Order admits fewer than it loses.",
+  droidHead:"COUNSEL AND OATHS",
+  droidNote:"Every Sworn is paired for life with a droid Counsel. A Counsel witnesses each of the three Oaths, which the Seneschal records in his own hand. Only the Magister may speak to Vexis face to face.",
+  level:{ 'FO-5':'Sole head of the Order and keeper of the Covenant. Answers to the Supreme Commander alone and to no one inside the Order.', 'FO-4':'One of the Magister\'s two hands. The Order\'s field arm (Marshal) or its discipline and records (Seneschal). A senior voice in the Chapter.', 'SO-3':'Teaching rank and regional head. Runs a Vigil Hall and sits on the Chapter.', 'SO-1':'First command rank. Leads a field cell of two to four Sworn and answers for their deaths.', 'JO-2':'The working heart of the Order. A full operative on writ with a droid Counsel.', 'MID-1':'Sworn trainee bonded to one mentor. First oath taken.', 'E-2':'Adult candidate on trial. Testing for temperament, loyalty, Force aptitude and tolerance for pain and boredom.', 'E-1':'The lowest rung and the only one not sworn. A child ward of the Order.' },
+  special:{
+    'Magister':'THE SOLE HEAD OF THE ORDER. Keeper of the Covenant and the only brother permitted to speak to Vexis face to face. Governs absolutely within the Covenant and the state\'s writ, holds veto over the Chapter and may convene or dismiss it at will. Names the Marshal and the Seneschal. ENTRY: chosen by the two hands and confirmed by Vexis; lifetime appointment. EXIT: death. A Magister who becomes unfit is not deposed; he is waited out. NUMBER: 1.',
+    'Marshal':'THE ORDER\'S MILITARY HEAD, one of the Magister\'s two hands. Commands all field operations, liaises with the Military Senate and holds the war-plan. Always an Edge-brother. Can task any brother below the Magister and answers for every writ carried out. ENTRY: selected by the Magister, usually from the Edge, confirmed by the Chapter. EXIT: death, or elevation to Magister. NUMBER: 1.',
+    'Seneschal':'THE ORDER\'S ADMINISTRATIVE HEAD AND CONSCIENCE, the second hand of the Magister. A lateral post, deliberately not on the command ladder: it stands beside the Marshal so that neither grows too strong. Keeps discipline, oaths, records, assignments and internal law; keeps the Ledger of the Fallen; recites the Covenant; adjudicates disputes between Edge and Shroud; runs the Vaults. Can censure even a Marshal, though the Magister is the final court. Often an Eye-brother. ENTRY: elevated by the Magister from a Sworn or Prior of exceptional judgement. EXIT: death or, rarely, the Magister\'s seat. NUMBER: 1.',
+    'Preceptor':'A TEACHING RANK AND REGIONAL HEAD. Commands a Vigil Hall (recruitment, training, induction), oversees the Oblates, Aspirants and Novices in it, sits on the Chapter and sets doctrine with the Magister. Rarely leaves his Hall and rarely fights. ENTRY: selected by the Magister from proven Priors. EXIT: elevation to Marshal or Seneschal, or death in the Hall. NUMBER: 2 to 3.',
+    'Prior':'THE FIRST COMMAND RANK. Leads a small cell of two to four Sworn, plans and runs field operations, assigns his brothers and takes responsibility for their deaths. Reports to a Preceptor or the Marshal. ENTRY: proven field record and the Marshal\'s sponsorship; the Chapter confirms. EXIT: elevation to Preceptor, or service until death. NUMBER: 3 to 5.',
+    'Sworn':'A FULL OPERATIVE, the rank that actually does the job. Takes the Oath of the Sworn, is paired for life with a droid Counsel and is sent on writs: hunting rogue sensitives, silencing loose ends, guarding secrets, killing targets. Alone in the field he answers to no one until he reports. May take the Oath of Consecration into a Calling (Edge, Shroud or Eye), which turns a generalist into a specialist. ENTRY: completing the Novice decade and passing the Chapter\'s judgment. EXIT: death, the Ledger, or elevation. NUMBER: 10 to 15.',
+    'Novice':'A SWORN TRAINEE, bonded for the duration to one mentor of Sworn rank or higher. Trains in sparring, covercraft, the Creed and the Counsel-archive, and shadows the mentor in the field. Must obey the mentor absolutely; holds authority over Oblates only. ENTRY: the Oath of the Novice before the Chapter. EXIT: about a decade of training, then the Oath of the Sworn. NUMBER: 5 to 12.',
+    'Aspirant':'AN ADULT CANDIDATE ON TRIAL. Either a grown Oblate who chose to stay or a sensitive the Veil found already grown. Assigned to a Hall and watched constantly; no specialty yet. Trusted with real tasks but holds no authority. ENTRY: by choice after Oblacy, or Veil recruitment as an adult. EXIT: months to years of trial; most wash out. Those who pass take the Oath of the Novice. NUMBER: 3 to 8.',
+    'Oblate':'A CHILD GIVEN TO THE ORDER, smuggled in by the Veil or born on Osseriton and tested strong. Not sworn. Learns, serves and watches; carries, cleans and runs errands for Novices and the Sworn, absorbing the Creed by repetition before understanding it. Answers to any sworn brother and holds no authority. ENTRY: given as a child or offered as a ward; no oath. EXIT: at adulthood an Oblate may leave freely, the only clean exit in the Order. Those who stay become Aspirants. NUMBER: 5 to 15.'
+  } },
+
 admin: { tab:'gov', label:'Administration', name:'Provincial Administration', fam:'civil',
   intro:"The Provincial Administration is the civil half of the Provincial Charter: the ministries that run agriculture, industry, education, justice and resource management. Civil officials answer to the Civilian Council and, in security matters, to the Supreme Commander's veto.",
   heritage:"CIS provincial statutes and the Hemes Arbora councils.",
@@ -335,15 +375,17 @@ assembly: { tab:'gov', label:'Assembly', name:'Provincial Assembly', fam:'civil'
   posts:{ FO:"Presides over a chamber.", SO:"Chairs a committee or holds a senior seat.", JO:"Sits as a councillor or senator.", MID:"Serves as a page in the chamber.", NCO:"Secretariat staff." } }
 };
 
+// TABS: the header tabs and which branch columns each one shows.
 const TABS = {
   fleet:   { label:'Fleet',        cols:['navy','fighter','boarding','nint'] },
   ground:  { label:'Ground',       cols:['army','commando','pdc','aint'] },
   support: { label:'Support',      cols:['eng','log','med','rnd','sig'] },
   droid:   { label:'Droid Corps',  cols:['droid','liaison'] },
-  intel:   { label:'Intel/Security', cols:['psb','veil','cry','guard'] },
+  intel:   { label:'Intel/Security', cols:['psb','veil','cry','guard','vigil'] },
   gov:     { label:'Governance',   cols:['admin','treasury','judge','const_','assembly'] }
 };
 
+// Sanity check: logs an error to the console if a branch has the wrong number of ranks, then splits ranks into arrays.
 (function () {
   Object.keys(BRANCHES).forEach(k => {
     const r = BRANCHES[k].ranks.split(';');

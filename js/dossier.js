@@ -1,8 +1,12 @@
+// dossier.js: generates the text shown in rank and branch popups.
+// grpOf: maps a tier (e.g. SO-2) to its group (FO, SO, JO, MID, WO, NCO, E).
 const grpOf = t => t.startsWith('FO') ? 'FO' : t.startsWith('SO') ? 'SO' : t.startsWith('JO') ? 'JO' : t.startsWith('MID') ? 'MID'
   : t.startsWith('WO') ? 'WO' : t.startsWith('SNCO') ? 'SNCO' : t.startsWith('JNCO') ? 'JNCO' : 'E';
+// GROUP_NAME / POST_KEY: display names for tier groups and the key used to look up unit lists.
 const GROUP_NAME = { FO:'FLAG AUTHORITY', SO:'SENIOR OFFICER', JO:'JUNIOR OFFICER', MID:'CADET OFFICER', WO:'WARRANT OFFICER', SNCO:'SENIOR NCO', JNCO:'JUNIOR NCO', E:'ENLISTED' };
 const POST_KEY = { FO:'FO', SO:'SO', JO:'JO', MID:'MID', WO:'WO', SNCO:'NCO', JNCO:'NCO', E:'E' };
 
+// LEVEL / REQ_MIL / REQ_CIVIL / DROID_NOTE / SPECIAL: wording blocks used when building rank descriptions.
 const LEVEL = {
   'FO-5':'Apex of the branch below the Supreme Commander. Sets doctrine, defends the branch before the Military Senate and advises the Supreme Commander in person.',
   'FO-4':'Senior flag grade. Commands the branch\'s main formation or a primary directorate and deputises for the apex officer.',
@@ -92,23 +96,27 @@ const SPECIAL = {
   'Commissioner':'Head of the Civil Constabulary. Appointed by the Minister President and responsible to the Ministry of Justice.'
 };
 
+// addressFor: how a person of this rank is formally addressed.
 function addressFor(branchKey, tier) {
   const b = BRANCHES[branchKey], rank = b.ranks[TIERS.indexOf(tier)], g = grpOf(tier);
   if (branchKey === 'veil') return 'By cover name only. Never by rank.';
+  if (branchKey === 'vigil') return rank === 'Magister' ? 'Magister' : rank === 'Oblate' ? 'Oblate, by first name' : 'Brother ' + rank;
   if (b.fam === 'droid' && branchKey === 'droid') return `${rank}, by serial designation (e.g. "${rank.split(' ')[0]} TX-0412")`;
   if (g === 'FO' || g === 'SO') return `${rank}, Sir/Ma'am`;
   if (g === 'JO' || g === 'MID') return `${rank.split(',')[0]}, Sir/Ma'am`;
   return rank;
 }
 
+// describeRank: full dossier text for one rank in one branch.
 function describeRank(branchKey, tier) {
   const b = BRANCHES[branchKey], idx = TIERS.indexOf(tier), rank = b.ranks[idx], g = grpOf(tier);
   const civil = CIVIL_FAMS.includes(b.fam), pk = POST_KEY[g];
   let o = `OFFICIAL PROVINCIAL PERSONNEL DATA RECORD\nRANK: ${rank.toUpperCase()} | BRANCH: ${b.name.toUpperCase()} | TIER: ${tier}\n\n`;
   o += `${b.name.toUpperCase()}\n${b.intro}\n\nMISSION: ${b.mission}\nCHAIN OF COMMAND: ${b.chain}\nREPORTS TO: ${b.reports}\n\n`;
   o += `${GROUP_NAME[g]} [${tier}]\n`;
-  if (SPECIAL[rank]) o += SPECIAL[rank] + '\n\n';
-  o += LEVEL[tier] + '\n\n';
+  const sp = (b.special && b.special[rank]) || SPECIAL[rank];
+  if (sp) o += sp + '\n\n';
+  o += ((b.level && b.level[tier]) || LEVEL[tier]) + '\n\n';
   if (b.posts[pk]) o += `TYPICAL POSTING: ${b.posts[pk]}\n\n`;
   const sup = above0(b, idx);
   o += `POSITION IN THE CHAIN:\n • Answers to: ${sup ? sup + ' of the ' + b.name : 'the branch\'s reporting authority (' + b.reports + ')'}\n • Branch line: ${b.chain}\n`;
@@ -119,14 +127,27 @@ function describeRank(branchKey, tier) {
   if (units.length) o += `UNITS AT THIS LEVEL:\n` + units.map(u => ` • ${u}`).join('\n') + '\n\n';
   o += `CORE DUTIES:\n` + b.duties.map(d => ` • ${d}`).join('\n') + '\n\n';
   const above = b.ranks.slice(0, idx).reverse().find(r => r !== '-'), below = b.ranks.slice(idx + 1).find(r => r !== '-');
-  o += `ADVANCEMENT:\n${(civil ? REQ_CIVIL : REQ_MIL)[g]}\n`;
+  o += `ADVANCEMENT:\n${b.advance || (civil ? REQ_CIVIL : REQ_MIL)[g]}\n`;
   o += `${above ? 'Next grade: ' + above + '.' : 'This is the highest rank of the branch.'} ${below ? 'Subordinate grade: ' + below + '.' : 'This is the entry grade of the branch.'}\n\n`;
-  if (!civil) o += `DROID AND ORGANIC PERSONNEL:\n${DROID_NOTE[g]}\n\n`;
+  if (!civil) o += `${b.droidHead || 'DROID AND ORGANIC PERSONNEL'}:\n${b.droidNote || DROID_NOTE[g]}\n\n`;
   if (b.traditions) o += `TRADITIONS:\n${b.traditions}\n\n`;
   o += `INSIGNIA:\n${FAMILIES[b.fam].note}`;
   return o;
 }
 
+// describeLateral: dossier text for a lateral post (stands beside a ranked post rather than above or below it).
+function describeLateral(branchKey) {
+  const b = BRANCHES[branchKey], L = b.lateral, idx = TIERS.indexOf(L.tier), peer = b.ranks[idx];
+  let o = `OFFICIAL PROVINCIAL PERSONNEL DATA RECORD\nRANK: ${L.rank.toUpperCase()} (LATERAL POST) | BRANCH: ${b.name.toUpperCase()} | TIER: ${L.tier}\n\n`;
+  o += `${b.name.toUpperCase()}\n${b.intro}\n\nMISSION: ${b.mission}\nCHAIN OF COMMAND: ${b.chain}\nREPORTS TO: ${b.reports}\n\n`;
+  o += `${GROUP_NAME[grpOf(L.tier)]} [${L.tier}] // LATERAL\n${b.special[L.rank]}\n\n${b.level[L.tier]}\n\n`;
+  o += `POSITION IN THE CHAIN:\n • Stands beside: ${peer} of the ${b.name} (same tier, different duties)\n • Answers to: the Magister, who is the final court\n • Branch line: ${b.chain}\n\n`;
+  o += `CORE DUTIES:\n` + b.duties.map(d => ` • ${d}`).join('\n') + '\n\n';
+  o += `ADVANCEMENT:\n${b.advance}\n\n${b.droidHead}:\n${b.droidNote}\n\nTRADITIONS:\n${b.traditions}\n\nINSIGNIA:\n${FAMILIES[b.fam].note}`;
+  return o;
+}
+
+// above0 / equivalents / unitsFor: helpers that find the next rank up, equal ranks in other branches and units at this level.
 function above0(b, idx) { const r = b.ranks.slice(0, idx).reverse().find(x => x !== '-'); return r || null; }
 function equivalents(branchKey, idx) {
   const out = [];
@@ -136,6 +157,7 @@ function equivalents(branchKey, idx) {
 function unitsFor(b, key) { return (b.formations || []).filter(f => f.startsWith(key + '|')).map(f => f.slice(key.length + 1)); }
 const UNIT_LABEL = { FO:'FLAG LEVEL', SO:'SENIOR OFFICER LEVEL', MID:'CADET LEVEL', JO:'JUNIOR OFFICER LEVEL', WO:'WARRANT LEVEL', NCO:'NCO LEVEL', E:'ENLISTED LEVEL' };
 
+// describeBranch: full record text for a branch (opened by clicking a branch header).
 function describeBranch(branchKey) {
   const b = BRANCHES[branchKey], held = b.ranks.filter(r => r !== '-');
   let o = `OFFICIAL PROVINCIAL BRANCH RECORD\nBRANCH: ${b.name.toUpperCase()} | RANKS: ${held.length}\n\n`;
@@ -148,6 +170,7 @@ function describeBranch(branchKey) {
   return o;
 }
 
+// SUPREME_TEXT: dossier text for the Supreme Commander row.
 const SUPREME_TEXT = `OFFICIAL PROVINCIAL PERSONNEL DATA RECORD
 RANK: SUPREME COMMANDER | OFFICE: OFFICE OF THE SUPREME COMMANDER | TIER: FO-6
 

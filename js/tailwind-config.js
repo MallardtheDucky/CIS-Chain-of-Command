@@ -1,3 +1,4 @@
+// tailwind-config.js: custom colour names for the Tailwind CDN build.
 tailwind.config = {
             theme: {
                 extend: {
